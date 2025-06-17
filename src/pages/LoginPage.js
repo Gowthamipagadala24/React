@@ -1,46 +1,29 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
-function LoginPage() {
+export default function LoginPage() {
   const { login } = useAuth();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const [u, setU] = useState("");
+  const [p, setP] = useState("");
+  const [err, setErr] = useState("");
+  const nav = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handle = (e) => {
     e.preventDefault();
-    if (login(username, password)) {
-      navigate("/dashboard");
-    } else {
-      setError("Invalid username or password");
-    }
+    if (login(u, p)) nav("/dashboard");
+    else setErr("Invalid credentials");
   };
 
   return (
-    <div className="login-page">
-      <h2>Bank Login</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+    <div className="container">
+      <h1>Login</h1>
+      <form onSubmit={handle}>
+        <input value={u} onChange={e => setU(e.target.value)} placeholder="Username" required />
+        <input type="password" value={p} onChange={e => setP(e.target.value)} placeholder="Password" required />
         <button type="submit">Login</button>
       </form>
-      {error && <p>{error}</p>}
+      {err && <p className="error">{err}</p>}
     </div>
   );
 }
-
-export default LoginPage;

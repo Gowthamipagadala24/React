@@ -1,20 +1,20 @@
-import React, { createContext, useState,  useContext } from "react";
-import { users as mockUsers } from "../data/users";
+import React, { createContext, useState, useEffect, useContext } from "react";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(() =>
-    JSON.parse(localStorage.getItem("bankUser"))
-  );
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem("bankUser"));
+    if (stored) setUser(stored);
+  }, []);
 
   const login = (username, password) => {
-    const found = mockUsers.find(
-      (u) => u.username === username && u.password === password
-    );
-    if (found) {
-      localStorage.setItem("bankUser", JSON.stringify(found));
-      setUser(found);
+    if (username === "admin" && password === "admin") {
+      const newUser = { username, balance: 1000, transactions: [] };
+      localStorage.setItem("bankUser", JSON.stringify(newUser));
+      setUser(newUser);
       return true;
     }
     return false;
