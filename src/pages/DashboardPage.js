@@ -5,8 +5,8 @@ export default function DashboardPage() {
   const { user } = useAuth();
   const [amt, setAmt] = useState("");
   const [msg, setMsg] = useState("");
+  const [recipient, setRecipient] = useState("");
 
-  // ✅ Prevent crash if user is null (e.g. not logged in)
   if (!user) {
     return (
       <div style={{ textAlign: "center", padding: "2rem" }}>
@@ -18,18 +18,21 @@ export default function DashboardPage() {
   const transfer = () => {
     const val = parseFloat(amt);
     if (!val || val <= 0) return setMsg("Enter valid amount");
+    if (!recipient) return setMsg("Enter recipient name");
     if (val > user.balance) return setMsg("Insufficient funds");
 
     user.balance -= val;
     user.transactions.push({
       type: "transfer",
       amount: val,
+      to: recipient,
       date: new Date().toLocaleDateString(),
     });
 
     localStorage.setItem("bankUser", JSON.stringify(user));
     setMsg(`₹${val} transferred.`);
     setAmt("");
+    setRecipient("");
   };
 
   return (
@@ -38,10 +41,18 @@ export default function DashboardPage() {
       <p>Balance: ₹{user.balance}</p>
       <div className="transfer-form">
         <input
+          type="text"
+          value={recipient}
+          onChange={(e) => setRecipient(e.target.value)}
+          placeholder="Recipient Name"
+          required
+        />
+        <input
           type="number"
           value={amt}
           onChange={(e) => setAmt(e.target.value)}
           placeholder="₹ Amount"
+          required
         />
         <button onClick={transfer}>Send Money</button>
       </div>
@@ -51,6 +62,7 @@ export default function DashboardPage() {
         {user.transactions.map((t, i) => (
           <li key={i}>
             {t.date}: {t.type} ₹{t.amount}
+            {t.to && ` to ${t.to}`}
           </li>
         ))}
       </ul>

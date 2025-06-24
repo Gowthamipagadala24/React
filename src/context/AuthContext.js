@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (username, password) => {
-    if (username === "admin" && password === "admin") {
+    if (username === "Gowthami" && password === "1234") {
       const newUser = { username, balance: 1000, transactions: [] };
       localStorage.setItem("bankUser", JSON.stringify(newUser));
       setUser(newUser);
