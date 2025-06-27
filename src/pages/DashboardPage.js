@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import FundDetailsPopup from "../components/FundDetailsPopup";
 
 export default function DashboardPage() {
   const { user } = useAuth();
   const [amt, setAmt] = useState("");
   const [msg, setMsg] = useState("");
   const [recipient, setRecipient] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
 
   if (!user) {
     return (
@@ -38,6 +40,12 @@ export default function DashboardPage() {
   return (
     <div className="container">
       <h1>Dashboard</h1>
+      <button onClick={() => setShowPopup(true)}>
+        View KiwiSaver
+      </button>
+      {showPopup && (
+        <FundDetailsPopup balance={user.balance} onBack={() => setShowPopup(false)} />
+      )}
       <p>Balance: ₹{user.balance}</p>
       <div className="transfer-form">
         <input
@@ -65,7 +73,7 @@ export default function DashboardPage() {
             {t.to && ` to ${t.to}`}
           </li>
         ))}
-      </ul>
+      </ul>     
     </div>
   );
 }
